@@ -21,93 +21,12 @@
       content: "_";
       animation: blink 1s step-end infinite;
     }
-    @keyframes blink {
-      50% { opacity: 0; }
-    }
-    .hacker-input:focus {
-      box-shadow: 0 0 15px rgba(57, 255, 20, 0.6);
-    }
-    .blinking-red {
-      color: #ef4444;
-      animation: blink-red 1.5s step-end infinite;
-    }
-    @keyframes blink-red {
-      50% { opacity: 0.5; }
-    }
-    .shake {
-      animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-    }
-    @keyframes shake {
-      10%, 90% { transform: translate3d(-1px, 0, 0); }
-      20%, 80% { transform: translate3d(2px, 0, 0); }
-      30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-      40%, 60% { transform: translate3d(4px, 0, 0); }
-    }
-    .signal-card {
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .signal-card:hover:not(.locked-card) {
-      transform: translateY(-5px);
-      box-shadow: 0 0 25px rgba(57, 255, 20, 0.5);
-    }
-    #chat-widget {
-      transition: all 0.3s ease-in-out;
-    }
-    #chat-messages::-webkit-scrollbar {
-      width: 4px;
-    }
-    #chat-messages::-webkit-scrollbar-track {
-      background: #1a1a1a;
-    }
-    #chat-messages::-webkit-scrollbar-thumb {
-      background: #00ff00;
-    }
-    #live-feed-container {
-      mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
-      -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
-    }
-    .winner-item {
-      animation: slideInFromLeft 0.5s ease-out forwards;
-      gap: 10px;
-    }
-    @keyframes slideInFromLeft {
-      from { opacity: 0; transform: translateX(-30px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
+    @keyframes blink { 50% { opacity: 0; } }
+    
     .btn-disabled {
-      background-color: #4a5568;
-      cursor: not-allowed;
-      color: #a0aec0;
-    }
-    .multiplier-rising {
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
-      color: #63b3ed;
-    }
-    .multiplier-final {
-      color: #48bb78;
-      text-shadow: 0 0 20px rgba(72, 187, 120, 0.8);
-    }
-    .custom-select-options {
-      animation: fadeIn 0.2s ease-out;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .mine-cell {
-      background-color: #1a202c;
-      border-radius: 0.375rem;
-      transition: all 0.3s ease-in-out;
-      cursor: default;
-    }
-    .mine-cell.safe {
-      background-image: url(https://www.freeiconspng.com/uploads/yellow-christmas-star-png-18.png);
-      background-size: 70%;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-color: #38a169;
-      transform: scale(1.05);
-      box-shadow: 0 0 15px rgba(56, 161, 105, 0.7);
+      background-color: #4a5568 !important;
+      cursor: not-allowed !important;
+      color: #a0aec0 !important;
     }
     .game-console {
       background-color: #0d1117;
@@ -118,13 +37,265 @@
       animation: fadeInConsole 0.3s ease-in;
       color: #a5d6ff;
     }
-    .game-console p.success { color: #56d364; }
-    .game-console p.error { color: #f85149; }
-    @keyframes fadeInConsole {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    @keyframes fadeInConsole { from { opacity: 0; } to { opacity: 1; } }
+    
+    .shimmer-btn {
+      position: relative;
+      overflow: hidden;
+      background: #1a202c;
+      border: 1px solid #f6e05e;
+      color: #f6e05e;
+      transition: all 0.3s;
     }
-    .penalty-gate-post { background-color: #a0aec0; }
-    .penalty-target-zone {
-      background-color: rgba(255, 255, 255, 0.1);
-      border: 2px dashed rgba(255, 255, 2
+    .shimmer-btn:hover { box-shadow: 0 0 15px rgba(246, 224, 94, 0.6); }
+    .shimmer-btn::before {
+      content: ""; position: absolute; top: 0; left: -150%; width: 75%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(246, 224, 94, 0.4), transparent);
+      animation: shimmer 5s infinite linear;
+    }
+    @keyframes shimmer { 0% { transform: translateX(0); } 100% { transform: translateX(350%); } }
+    .locked-card { cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+  <!-- MAIN CONTENT (START SCREEN) -->
+  <div id="main-content" class="min-h-screen flex flex-col items-center justify-center p-4">
+    <header class="text-center mb-12">
+      <h1 class="text-3xl md:text-5xl tracking-widest cursor-default">
+        <span id="typing-text">AI BASHORATCHI</span><span class="cursor"></span>
+      </h1>
+    </header>
+    <button id="openModalBtn" class="bg-transparent border-2 border-green-400 text-green-400 px-8 py-3 text-lg hover:bg-green-400 hover:text-black transition-all duration-300 active:scale-95 shadow-lg shadow-green-500/20 hover:shadow-green-500/40">
+      AI SIGNALLARINI OLISH
+    </button>
+  </div>
+
+  <!-- APP CONTAINER (SIGNALS SCREEN) -->
+  <div id="app-container" class="hidden min-h-screen container mx-auto p-4 md:p-8">
+    <div class="w-full flex justify-end items-center mb-4">
+      <button id="lotteryBtn" class="shimmer-btn rounded-md px-4 py-2 text-sm mr-4">
+        <i class="fas fa-star mr-2"></i>LOTEREYA
+      </button>
+      <button id="logoutBtn" class="bg-red-600 text-white px-4 py-2 text-sm rounded-md hover:bg-red-500 transition-colors active:scale-95">
+        <i class="fas fa-sign-out-alt mr-2"></i>Chiqish
+      </button>
+    </div>
+
+    <div id="signals-section">
+      <h2 class="text-3xl md:text-4xl text-center mb-10 tracking-widest">// AI SIGNALLARI //</h2>
+      
+      <div id="cards-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+        <!-- VIP Card -->
+        <div class="signal-card locked-card bg-[#0d0d0d] border border-yellow-700 rounded-lg overflow-hidden flex flex-col">
+          <div class="p-4 flex flex-col flex-grow text-center">
+            <h3 class="text-lg font-bold mb-2 text-yellow-300">VIP SPORT</h3>
+            <p class="text-sm text-gray-400 mb-3 font-mono">// BOSHQA KIRISH KODI KERAK</p>
+            <button class="w-full mt-auto bg-gray-600 text-gray-400 px-4 py-2 cursor-not-allowed" disabled>FAOLASHTIRISH</button>
+          </div>
+        </div>
+
+        <!-- Aviator Card -->
+        <div class="signal-card bg-[#0d0d0d] border border-green-700 rounded-lg overflow-hidden flex flex-col">
+          <div class="p-4 flex flex-col flex-grow text-center">
+            <h3 class="text-lg font-bold mb-2">AVIATOR</h3>
+            <p class="text-sm text-gray-400 mb-3 font-mono">// Tizim tayyor</p>
+            <button class="activate-btn w-full mt-auto bg-green-600 text-black px-4 py-2 hover:bg-green-500 transition-all duration-300 active:scale-95" data-game="aviator">FAOLASHTIRISH</button>
+          </div>
+        </div>
+
+        <!-- Mines Card -->
+        <div class="signal-card bg-[#0d0d0d] border border-green-700 rounded-lg overflow-hidden flex flex-col">
+          <div class="p-4 flex flex-col flex-grow text-center">
+            <h3 class="text-lg font-bold mb-2">MINES</h3>
+            <p class="text-sm text-gray-400 mb-3 font-mono">// Tizim tayyor</p>
+            <button class="activate-btn w-full mt-auto bg-green-600 text-black px-4 py-2 hover:bg-green-500 transition-all duration-300 active:scale-95" data-game="mines">FAOLASHTIRISH</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAME VIEW SECTION -->
+    <div id="game-view" class="hidden mt-8">
+      <!-- Aviator Game Screen -->
+      <div id="game-screen-aviator" class="game-screen hidden flex-col items-center justify-center">
+        <div class="w-full relative min-h-[50vh] flex flex-col items-center justify-center bg-black/30 border border-green-800 rounded-md p-6">
+          <button class="back-to-signals-btn absolute top-4 left-4 text-yellow-400 border border-yellow-400 rounded px-3 py-1 text-sm hover:bg-yellow-400 hover:text-black">
+            <-- Orqaga
+          </button>
+          <h3 class="text-2xl mb-4 text-center text-green-400">AVIATOR BASHORATCHI</h3>
+          <div class="mb-4"><p id="aviator-multiplier" class="text-6xl font-mono text-center text-white">x1.00</p></div>
+          <p id="aviator-bet-suggestion" class="text-center text-yellow-400 h-8 mb-4 font-bold"></p>
+          
+          <div class="flex space-x-4 w-full max-w-md">
+            <button id="aviator-get-bet-btn" class="flex-1 bg-green-600 text-black px-4 py-2 rounded-md hover:bg-green-500">Tikish miqdorini olish</button>
+            <button id="aviator-get-signal-btn" class="flex-1 px-4 py-2 rounded-md btn-disabled" disabled>Signalni olish</button>
+          </div>
+          <div id="aviator-console" class="game-console w-full max-w-md border rounded-md mt-4 p-2 font-mono text-xs overflow-y-auto"></div>
+        </div>
+      </div>
+
+      <!-- Mines Game Screen -->
+      <div id="game-screen-mines" class="game-screen hidden flex-col items-center justify-center">
+        <div class="w-full relative min-h-[50vh] flex flex-col items-center justify-center bg-black/30 border border-green-800 rounded-md p-6">
+          <button class="back-to-signals-btn absolute top-4 left-4 text-yellow-400 border border-yellow-400 rounded px-3 py-1 text-sm hover:bg-yellow-400 hover:text-black">
+            <-- Orqaga
+          </button>
+          <h3 class="text-2xl mb-4 text-center text-green-400">MINES BASHORATCHI</h3>
+          <p id="mines-bet-suggestion" class="text-center text-yellow-400 h-8 mb-4 font-bold"></p>
+          
+          <div class="flex space-x-4 w-full max-w-md">
+            <button id="mines-get-bet-btn" class="flex-1 bg-green-600 text-black px-4 py-2 rounded-md hover:bg-green-500">Tikish miqdorini olish</button>
+            <button id="mines-get-signal-btn" class="flex-1 px-4 py-2 rounded-md btn-disabled" disabled>Signalni olish</button>
+          </div>
+          <div id="mines-console" class="game-console w-full max-w-md border rounded-md mt-4 p-2 font-mono text-xs overflow-y-auto"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // Навигация между экранами
+    const mainContent = document.getElementById('main-content');
+    const appContainer = document.getElementById('app-container');
+    const openModalBtn = document.getElementById('openModalBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const gameView = document.getElementById('game-view');
+    const signalsSection = document.getElementById('signals-section');
+
+    openModalBtn.addEventListener('click', () => {
+      mainContent.classList.add('hidden');
+      appContainer.classList.remove('hidden');
+    });
+
+    logoutBtn.addEventListener('click', () => {
+      appContainer.classList.add('hidden');
+      mainContent.classList.remove('hidden');
+      resetGames();
+    });
+
+    // Обработка карточек игр
+    document.querySelectorAll('.activate-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const game = e.target.getAttribute('data-game');
+        signalsSection.classList.add('hidden');
+        gameView.classList.remove('hidden');
+        
+        // Скрываем все экраны игр и открываем выбранный
+        document.querySelectorAll('.game-screen').forEach(scr => scr.classList.add('hidden'));
+        const activeScreen = document.getElementById(`game-screen-${game}`);
+        if(activeScreen) activeScreen.classList.remove('hidden');
+      });
+    });
+
+    // Кнопки "Назад" внутри игр
+    document.querySelectorAll('.back-to-signals-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        gameView.classList.add('hidden');
+        signalsSection.classList.remove('hidden');
+        resetGames();
+      });
+    });
+
+    // ЛОГИКА ДЛЯ AVIATOR
+    const aviatorGetBetBtn = document.getElementById('aviator-get-bet-btn');
+    const aviatorGetSignalBtn = document.getElementById('aviator-get-signal-btn');
+    const aviatorConsole = document.getElementById('aviator-console');
+    const aviatorMultiplier = document.getElementById('aviator-multiplier');
+    const aviatorBetSuggestion = document.getElementById('aviator-bet-suggestion');
+
+    aviatorGetBetBtn.addEventListener('click', () => {
+      aviatorConsole.innerHTML = "<p>// AI tahlil qilmoqda...</p>";
+      aviatorGetBetBtn.disabled = true;
+      
+      setTimeout(() => {
+        aviatorBetSuggestion.innerText = "Tavsiya etilgan tikish: Balansdan 5%";
+        aviatorConsole.innerHTML += "<p style='color: #56d364'>// Muvaffaqiyatli! Endi signalni olishingiz mumkin.</p>";
+        
+        // Активируем кнопку сигнала
+        aviatorGetSignalBtn.disabled = false;
+        aviatorGetSignalBtn.classList.remove('btn-disabled');
+        aviatorGetSignalBtn.classList.add('bg-green-600', 'text-black', 'hover:bg-green-500');
+      }, 1500);
+    });
+
+    aviatorGetSignalBtn.addEventListener('click', () => {
+      aviatorConsole.innerHTML += "<p>// Signal yuklanmoqda...</p>";
+      aviatorGetSignalBtn.disabled = true;
+
+      let currentMult = 1.00;
+      const targetMult = (Math.random() * (5.00 - 1.20) + 1.20).toFixed(2);
+      
+      const interval = setInterval(() => {
+        if (currentMult >= targetMult) {
+          clearInterval(interval);
+          aviatorMultiplier.innerText = `x${targetMult}`;
+          aviatorConsole.innerHTML += `<p style='color: #56d364'>// Bajarildi! Koeffitsiyent: x${targetMult}</p>`;
+          aviatorGetSignalBtn.disabled = false;
+        } else {
+          currentMult += 0.15;
+          aviatorMultiplier.innerText = `x${currentMult.toFixed(2)}`;
+        }
+      }, 50);
+    });
+
+    // ЛОГИКА ДЛЯ MINES
+    const minesGetBetBtn = document.getElementById('mines-get-bet-btn');
+    const minesGetSignalBtn = document.getElementById('mines-get-signal-btn');
+    const minesConsole = document.getElementById('mines-console');
+    const minesBetSuggestion = document.getElementById('mines-bet-suggestion');
+
+    minesGetBetBtn.addEventListener('click', () => {
+      minesConsole.innerHTML = "<p>// Matritsa tahlil qilinmoqda...</p>";
+      minesGetBetBtn.disabled = true;
+      
+      setTimeout(() => {
+        minesBetSuggestion.innerText = "Tavsiya etilgan mina soni: 3 ta";
+        minesConsole.innerHTML += "<p style='color: #56d364'>// Matritsa tayyor! Signalni oling.</p>";
+        
+        minesGetSignalBtn.disabled = false;
+        minesGetSignalBtn.classList.remove('btn-disabled');
+        minesGetSignalBtn.classList.add('bg-green-600', 'text-black', 'hover:bg-green-500');
+      }, 1500);
+    });
+
+    minesGetSignalBtn.addEventListener('click', () => {
+      minesConsole.innerHTML += "<p>// Xavfsiz kataklar aniqlanmoqda...</p>";
+      minesGetSignalBtn.disabled = true;
+
+      setTimeout(() => {
+        const row = Math.floor(Math.random() * 5) + 1;
+        const col = Math.floor(Math.random() * 5) + 1;
+        minesConsole.innerHTML += `<p style='color: #56d364'>// AI Tavsiyasi: [Qator: ${row}, Ustun: ${col}] bosing!</p>`;
+        minesGetSignalBtn.disabled = false;
+      }, 1200);
+    });
+
+    // Сброс состояния при выходе или смене игры
+    function resetGames() {
+      // Aviator reset
+      aviatorGetBetBtn.disabled = false;
+      aviatorGetSignalBtn.disabled = true;
+      aviatorGetSignalBtn.classList.add('btn-disabled');
+      aviatorGetSignalBtn.classList.remove('bg-green-600', 'text-black');
+      aviatorConsole.innerHTML = "";
+      aviatorMultiplier.innerText = "x1.00";
+      aviatorBetSuggestion.innerText = "";
+
+      // Mines reset
+      minesGetBetBtn.disabled = false;
+      minesGetSignalBtn.disabled = true;
+      minesGetSignalBtn.classList.add('btn-disabled');
+      minesGetSignalBtn.classList.remove('bg-green-600', 'text-black');
+      minesConsole.innerHTML = "";
+      minesBetSuggestion.innerText = "";
+    }
+
+    // Кнопка лотереи (просто демо-клик)
+    document.getElementById('lotteryBtn').addEventListener('click', () => {
+      alert("Lotereya yaqin orada ishga tushadi!");
+    });
+  </script>
+</body>
+</html>
